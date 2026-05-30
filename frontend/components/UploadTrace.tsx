@@ -49,7 +49,7 @@ function StepItem({ label, state }: { label: string; state: StepState }) {
             ? "text-zinc-300"
             : state === "active"
             ? "text-zinc-800"
-            : "text-zinc-500"
+            : "text-zinc-500 dark:text-zinc-400"
         }
       >
         {label}
@@ -169,7 +169,7 @@ export default function UploadTrace() {
 
       {/* ── Upload / Error ── */}
       {isUpload && (
-        <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-zinc-200">
+        <div className="rounded-2xl bg-white dark:bg-zinc-900 p-6 shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-800">
           <div
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
@@ -185,7 +185,7 @@ export default function UploadTrace() {
               "flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-8 py-14 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400",
               stage === "dragging"
                 ? "scale-[1.012] border-zinc-900 bg-zinc-50"
-                : "border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50",
+                : "border-zinc-200 dark:border-zinc-700 hover:border-zinc-400 hover:bg-zinc-50",
             ].join(" ")}
           >
             <svg
@@ -228,10 +228,10 @@ export default function UploadTrace() {
 
       {/* ── Analyzing ── */}
       {stage === "analyzing" && (
-        <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-zinc-200">
-          <p className="mb-5 text-sm font-medium text-zinc-500">
+        <div className="rounded-2xl bg-white dark:bg-zinc-900 p-8 shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-800">
+          <p className="mb-5 text-sm font-medium text-zinc-500 dark:text-zinc-400">
             Analyzing{" "}
-            <span className="font-mono text-zinc-900">{file?.name}</span>
+            <span className="font-mono text-zinc-900 dark:text-zinc-100">{file?.name}</span>
           </p>
 
           <div className="mb-7 h-1.5 overflow-hidden rounded-full bg-zinc-100">
@@ -255,16 +255,16 @@ export default function UploadTrace() {
       {stage === "done" && result && (
         <>
           {/* Header */}
-          <div className="flex items-center justify-between rounded-2xl bg-white px-6 py-4 shadow-sm ring-1 ring-zinc-200">
+          <div className="flex items-center justify-between rounded-2xl bg-white dark:bg-zinc-900 px-6 py-4 shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-800">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
                 Trace ID
               </p>
-              <p className="font-mono font-semibold text-zinc-900">{result.trace_id}</p>
+              <p className="font-mono font-semibold text-zinc-900 dark:text-zinc-100">{result.trace_id}</p>
             </div>
             <button
               onClick={reset}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-zinc-500 ring-1 ring-zinc-200 transition hover:bg-zinc-50 hover:text-zinc-800"
+              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-zinc-500 dark:text-zinc-400 ring-1 ring-zinc-200 dark:ring-zinc-800 transition hover:bg-zinc-50 hover:text-zinc-800"
             >
               <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13.5 8A5.5 5.5 0 1 1 8 2.5a5.47 5.47 0 0 1 3.5 1.27" />
@@ -309,7 +309,7 @@ export default function UploadTrace() {
           <div className="flex gap-3">
             <button
               onClick={exportJson}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white py-3 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 py-3 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
             >
               <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M8 2v8m0 0-3-3m3 3 3-3M3 13h10" />
@@ -318,7 +318,7 @@ export default function UploadTrace() {
             </button>
             <button
               onClick={exportHtmlReport}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white py-3 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 py-3 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
             >
               <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 6l-2 2 2 2M12 6l2 2-2 2M9 3l-2 10" />

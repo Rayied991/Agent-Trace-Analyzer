@@ -31,9 +31,19 @@ export default function FindingsTable({ findings }: { findings: Finding[] }) {
   const visible = findings.filter((f) => filter === "all" || f.severity === filter);
 
   return (
-    <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-zinc-200">
+   <div className="
+                overflow-hidden
+              rounded-2xl
+              bg-white
+              shadow-sm
+              ring-1
+              ring-zinc-200
+
+              dark:bg-zinc-900
+              dark:ring-zinc-800
+              ">
       {/* Tab bar */}
-      <div className="flex items-center gap-1 border-b border-zinc-100 px-4 py-2.5">
+      <div className="flex items-center gap-1 border-b border-zinc-100 dark:border-zinc-800 px-4 py-2.5">
         <span className="mr-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
           Findings
         </span>
@@ -61,7 +71,7 @@ export default function FindingsTable({ findings }: { findings: Finding[] }) {
           visible.map((finding, i) => (
             <div
               key={i}
-              className="flex items-start gap-3 border-b border-zinc-100 py-3 last:border-0 transition-colors hover:bg-zinc-50 -mx-4 px-4"
+              className="flex items-start gap-3 border-b border-zinc-100 dark:border-zinc-800 py-3 last:border-0 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800 -mx-4 px-4"
             >
               <span
                 className={`mt-0.5 rounded px-2 py-0.5 text-[11px] font-semibold capitalize ${
@@ -71,8 +81,8 @@ export default function FindingsTable({ findings }: { findings: Finding[] }) {
                 {finding.severity}
               </span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-zinc-900">{finding.title}</p>
-                <p className="mt-0.5 text-xs text-zinc-500">{finding.recommendation}</p>
+                <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{finding.title}</p>
+                <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{finding.recommendation}</p>
               </div>
               {impactLabel(finding) && (
                 <span className="shrink-0 text-xs text-zinc-400 mt-0.5">

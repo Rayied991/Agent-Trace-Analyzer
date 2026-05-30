@@ -1,10 +1,12 @@
 /* eslint-disable react-hooks/set-state-in-effect */
+ 
 "use client";
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
+   
   const { theme, setTheme } =
     useTheme();
 
@@ -20,6 +22,7 @@ export default function ThemeToggle() {
   }
 
   return (
+
     <button
       onClick={() =>
         setTheme(
@@ -34,5 +37,6 @@ export default function ThemeToggle() {
         ? "☀️ Light"
         : "🌙 Dark"}
     </button>
+
   );
 }

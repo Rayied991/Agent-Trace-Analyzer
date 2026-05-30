@@ -14,7 +14,7 @@ function MetricCard({
   label,
   value,
   sub,
-  valueClass = "text-zinc-900",
+  valueClass = "text-zinc-900 dark:text-zinc-100",
 }: {
   label: string;
   value: string;
@@ -22,11 +22,15 @@ function MetricCard({
   valueClass?: string;
 }) {
   return (
-    <div className="rounded-xl bg-zinc-50 px-5 py-4 ring-1 ring-zinc-100 transition hover:ring-zinc-200">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+<div className="rounded-xl bg-zinc-50 px-5 py-4 ring-1 ring-zinc-100 transition hover:ring-zinc-200
+dark:bg-zinc-900
+dark:ring-zinc-800
+dark:hover:ring-zinc-700">
+     <p className="text-[10px] font-semibold uppercase tracking-widest
+text-zinc-400 dark:text-zinc-500">
         {label}
       </p>
-      <p className={`mt-1 text-2xl font-semibold leading-none ${valueClass}`}>
+     <p className={`mt-1 text-2xl font-semibold leading-none ${valueClass}`}>
         {value}
       </p>
       {sub && <p className="mt-1.5 text-xs text-zinc-400">{sub}</p>}

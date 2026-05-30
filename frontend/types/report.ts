@@ -1,17 +1,37 @@
+
 export interface Finding {
   finding_id: string;
-  severity: "critical" | "warning" | "info";
+
+  severity:
+    | "critical"
+    | "warning"
+    | "info";
+
   category: string;
+
   title: string;
+
   description: string;
 
-  token_impact?: number | null;
-  reliability_impact?: number | null;
-  latency_impact_ms?: number | null;
+  recommendation?: string;
 
-  recommendation?: string | null;
+  evidence?: string;
+
+  affected_steps?: string[];
+
+  metadata?: Record<
+    string,
+    unknown
+  >;
+
+  token_impact?: number;
+
+  reliability_impact?: number;
+
+  latency_impact_ms?: number;
+
+  cost_impact_usd?: number | null;
 }
-
 export interface ReportSummary {
   total_steps: number;
   total_findings: number;

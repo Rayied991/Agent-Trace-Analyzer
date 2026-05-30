@@ -3,11 +3,11 @@
 import { analyzeTrace, exportHtml } from "@/lib/api";
 import type { AuditReport } from "@/types/report";
 import { useCallback, useRef, useState } from "react";
+import { toast } from "sonner";
 import FindingsTable from "./FindingsTable";
 import SeverityChart from "./SeverityChart";
 import SeveritySummary from "./SeveritySummary";
 import SummaryCards from "./SummaryCards";
-
 type Stage = "idle" | "dragging" | "analyzing" | "done" | "error";
 
 const ANALYSIS_STEPS = [
@@ -96,11 +96,15 @@ export default function UploadTrace() {
       await new Promise((r) => setTimeout(r, 350));
       setResult(report);
       setStage("done");
-    } catch (err) {
+      toast.success(
+      "Analysis complete"
+    );
+    } catch{
       clearInterval(interval);
-      console.error(err);
+     toast.error("Analysis failed");
       setErrorMsg("Analysis failed. Please try again.");
       setStage("error");
+
     }
   }, []);
 
@@ -128,6 +132,9 @@ export default function UploadTrace() {
     a.href = URL.createObjectURL(blob);
     a.download = "trace_report.json";
     a.click();
+toast.success(
+  "JSON report downloaded"
+);
     URL.revokeObjectURL(a.href);
   };
 
@@ -140,9 +147,13 @@ export default function UploadTrace() {
       a.href = url;
       a.download = "trace_report.html";
       a.click();
+      toast.success(
+  "HTML report downloaded"
+);
       URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      // console.error(err);
+      toast.error("HTML export failed");
     }
   };
 

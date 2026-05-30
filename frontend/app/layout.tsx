@@ -1,6 +1,6 @@
-import "./globals.css";
-
 import ThemeProvider from "@/components/ThemeProvider";
+import { Toaster } from "sonner";
+import "./globals.css";
 
 export const metadata = {
   title: "Agent Trace Analyzer",
@@ -21,6 +21,8 @@ export default function RootLayout({
         <ThemeProvider>
           {children}
         </ThemeProvider>
+
+        <Toaster richColors/>
       </body>
     </html>
   );

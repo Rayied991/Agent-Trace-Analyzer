@@ -2,7 +2,7 @@
 
 import { Finding } from "@/types/report";
 import { useState } from "react";
-
+import FindingDrawer from "./FindingDrawer";
 type Filter = "all" | "critical" | "warning" | "info";
 
 const SEVERITY_PILL: Record<string, string> = {
@@ -27,10 +27,13 @@ const TABS: { key: Filter; label: string }[] = [
 
 export default function FindingsTable({ findings }: { findings: Finding[] }) {
   const [filter, setFilter] = useState<Filter>("all");
+  const [selectedFinding, setSelectedFinding] =
+  useState<Finding | null>(null);
 
   const visible = findings.filter((f) => filter === "all" || f.severity === filter);
 
   return (
+    <>
    <div className="
                 overflow-hidden
               rounded-2xl
@@ -69,10 +72,28 @@ export default function FindingsTable({ findings }: { findings: Finding[] }) {
           <p className="py-8 text-center text-sm text-zinc-400">No findings.</p>
         ) : (
           visible.map((finding, i) => (
-            <div
-              key={i}
-              className="flex items-start gap-3 border-b border-zinc-100 dark:border-zinc-800 py-3 last:border-0 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800 -mx-4 px-4"
-            >
+           <div
+  key={i}
+  onClick={() =>
+    setSelectedFinding(finding)
+  }
+  className="
+    cursor-pointer
+    flex
+    items-start
+    gap-3
+    border-b
+    border-zinc-100
+    dark:border-zinc-800
+    py-3
+    last:border-0
+    transition-colors
+    hover:bg-zinc-50
+    dark:hover:bg-zinc-800
+    -mx-4
+    px-4
+  "
+>
               <span
                 className={`mt-0.5 rounded px-2 py-0.5 text-[11px] font-semibold capitalize ${
                   SEVERITY_PILL[finding.severity]
@@ -94,5 +115,12 @@ export default function FindingsTable({ findings }: { findings: Finding[] }) {
         )}
       </div>
     </div>
+    <FindingDrawer
+      finding={selectedFinding}
+      onClose={() =>
+        setSelectedFinding(null)
+      }
+    />
+    </>
   );
 }

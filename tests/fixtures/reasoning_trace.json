@@ -1,0 +1,13 @@
+{
+  "trace_id": "reasoning-trace",
+  "agent_name": "research-agent",
+  "steps": [
+    {
+      "step_id": "1",
+      "step_type": "llm_call",
+      "content": "Therefore the API supports OAuth2.",
+      "input_tokens": 100,
+      "output_tokens": 50
+    }
+  ]
+}

@@ -39,6 +39,21 @@ class ReportGenerator:
         # Aggregate Metrics
         # -----------------------------------------
 
+        quality_issues = sum(
+            1
+            for finding in findings
+            if finding.reliability_impact
+        )
+
+        reliability_penalty = sum(
+            finding.reliability_impact or 0
+            for finding in findings
+        )
+
+        reliability_score = max(
+            0,
+            100 - reliability_penalty,
+        )
         wasted_tokens = sum(
             finding.token_impact or 0
             for finding in findings
@@ -80,11 +95,13 @@ class ReportGenerator:
 
         if findings:
             top_issue = max(
-                    findings,
-                    key=lambda f: (
-                        f.token_impact or 0
-                    ),
-                ).title
+                findings,
+                key=lambda f: (
+                    f.token_impact or 0
+                ) + (
+                    f.reliability_impact or 0
+                ),
+            ).title
 
         # -----------------------------------------
         # Build Summary
@@ -105,6 +122,8 @@ class ReportGenerator:
                 Severity.INFO,
                 0,
             ),
+            quality_issues=quality_issues,
+            reliability_score=reliability_score,
             total_tokens=trace.total_tokens,
             wasted_tokens=wasted_tokens,
             waste_percentage=round(

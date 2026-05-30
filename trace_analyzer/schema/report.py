@@ -40,6 +40,7 @@ class FindingCategory(str, Enum):
     LATENCY = "latency"
     TOOLING = "tooling"
     EFFICIENCY = "efficiency"
+    REASONING_GAP = "reasoning_gap"
 
 
 # =========================================================
@@ -98,6 +99,12 @@ class Finding(BaseModel):
         default=None,
         ge=0,
         description="Estimated wasted tokens"
+    )
+    
+    reliability_impact: Optional[int] = Field(
+    default=None,
+    ge=0,
+    description="Estimated reliability impact score"
     )
 
     cost_impact_usd: Optional[float] = Field(
@@ -181,6 +188,19 @@ class ReportSummary(BaseModel):
         default=0,
         ge=0,
         description="Info findings count"
+    )
+    
+    quality_issues: int = Field(
+    default=0,
+    ge=0,
+    description="Number of reliability issues detected"
+)
+
+    reliability_score: float = Field(
+    default=100.0,
+    ge=0,
+    le=100,
+    description="Overall reliability score"
     )
 
     total_tokens: int = Field(

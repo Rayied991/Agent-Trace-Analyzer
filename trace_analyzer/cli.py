@@ -167,7 +167,32 @@ def analyze(
         "Trace ID",
         report.trace_id,
     )
+    
+    summary_table.add_row(
+    "Quality Issues",
+    str(report.summary.quality_issues),
+    )
+    
+    score = report.summary.reliability_score
 
+    if score >= 90:
+        reliability_display = (
+            f"[green]{score}/100[/green]"
+        )
+    elif score >= 70:
+        reliability_display = (
+            f"[yellow]{score}/100[/yellow]"
+        )
+    else:
+        reliability_display = (
+            f"[red]{score}/100[/red]"
+        )
+
+    summary_table.add_row(
+    "Reliability Score",
+    reliability_display,
+    )
+    
     summary_table.add_row(
         "Total Steps",
         str(report.summary.total_steps),
@@ -244,8 +269,8 @@ def analyze(
     )
 
     findings_table.add_column(
-        "Token Impact",
-        justify="right",
+    "Impact",
+    justify="right",
     )
 
     findings_table.add_column(
@@ -268,23 +293,45 @@ def analyze(
     for finding in report.findings:
 
         severity_color = {
-            Severity.CRITICAL: "red",
-            Severity.WARNING: "yellow",
-            Severity.INFO: "blue",
-        }.get(
-            finding.severity,
-            "white",
+        Severity.CRITICAL: "red",
+        Severity.WARNING: "yellow",
+        Severity.INFO: "blue",
+    }.get(
+        finding.severity,
+        "white",
+    )
+
+    if finding.token_impact is not None:
+
+        impact = (
+            f"{finding.token_impact} tokens"
         )
 
-        findings_table.add_row(
-            f"[{severity_color}]"
-            f"{finding.severity.value.upper()}"
-            f"[/{severity_color}]",
-            finding.category.value,
-            finding.title,
-            str(finding.token_impact or 0),
-            finding.recommendation or "-",
+    elif finding.reliability_impact is not None:
+
+        impact = (
+            f"-{finding.reliability_impact} reliability"
         )
+
+    elif finding.latency_impact_ms is not None:
+
+        impact = (
+            f"{finding.latency_impact_ms:.0f} ms"
+        )
+
+    else:
+
+        impact = "-"
+
+    findings_table.add_row(
+        f"[{severity_color}]"
+        f"{finding.severity.value.upper()}"
+        f"[/{severity_color}]",
+        finding.category.value,
+        finding.title,
+        impact,
+        finding.recommendation or "-",
+    )
 
     console.print()
     console.print(

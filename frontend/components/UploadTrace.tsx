@@ -1,6 +1,6 @@
 "use client";
 
-import { analyzeTrace, exportHtml } from "@/lib/api";
+import { analyzeTrace, exportHtml, exportPdf } from "@/lib/api";
 import type { AuditReport } from "@/types/report";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -138,6 +138,40 @@ toast.success(
     URL.revokeObjectURL(a.href);
   };
 
+    const downloadPdf = async () => {
+  if (!file) return;
+
+  const currentFile = file;
+
+  try {
+    const blob =
+      await exportPdf(
+        currentFile
+      );
+
+    const url =
+      URL.createObjectURL(blob);
+
+    const a =
+      document.createElement("a");
+
+    a.href = url;
+    a.download = "report.pdf";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+    toast.success(
+      "PDF report downloaded"
+    );
+  } catch {
+    toast.error(
+      "Failed to export PDF"
+    );
+  }
+};
+
   const exportHtmlReport = async () => {
     if (!file) return;
     try {
@@ -156,6 +190,8 @@ toast.success(
       toast.error("HTML export failed");
     }
   };
+
+  
 
   const reset = () => {
     setStage("idle");
@@ -346,6 +382,13 @@ dark:ring-amber-800
               </svg>
               Export HTML
             </button>
+
+            <button
+          onClick={downloadPdf}
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 py-3 text-sm font-medium text-zinc-700 dark:text-zinc-200 transition dark:hover:bg-zinc-800"
+        >
+          Export PDF
+        </button>
             <button
               onClick={reset}
              className="

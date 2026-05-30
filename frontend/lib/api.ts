@@ -26,7 +26,32 @@ export async function analyzeTrace(
 
   return response.json();
 }
+export async function exportPdf(
+  file: File
+) {
+  const formData = new FormData();
 
+  formData.append(
+    "file",
+    file
+  );
+
+  const response = await fetch(
+    `${API_URL}/export/pdf`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      "PDF export failed"
+    );
+  }
+
+  return response.blob();
+}
 export async function exportHtml(
   file: File
 ) {

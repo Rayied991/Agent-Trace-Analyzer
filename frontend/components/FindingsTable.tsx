@@ -13,7 +13,7 @@ const SEVERITY_PILL: Record<string, string> = {
 
 function impactLabel(finding: Finding): string | null {
   if (finding.token_impact != null) return `${finding.token_impact} tokens`;
-  if (finding.reliability_impact != null) return `−${finding.reliability_impact} reliability`;
+  if (finding.reliability_impact != null) return `${finding.reliability_impact} reliability`;
   if (finding.latency_impact_ms != null) return `${Math.round(finding.latency_impact_ms)} ms`;
   return null;
 }

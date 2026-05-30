@@ -117,22 +117,39 @@ export default function FindingDrawer({
             )} 
 
         {/* Metadata */}
-        {finding.metadata &&
-          Object.keys(finding.metadata).length > 0 && (
-            <section className="mb-6">
-              <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
-                Metadata
-              </p>
+{finding.metadata &&
+  Object.keys(finding.metadata).length > 0 && (
+    <section className="mb-6">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
+          Metadata
+        </p>
 
-              <pre className="mt-2 overflow-x-auto rounded-lg bg-zinc-100 p-3 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
-                {JSON.stringify(
-                  finding.metadata,
-                  null,
-                  2
-                )}
-              </pre>
-            </section>
-          )}
+        <button
+          onClick={() =>
+            copyText(
+              JSON.stringify(
+                finding.metadata,
+                null,
+                2
+              )
+            )
+          }
+          className="text-xs text-blue-500 hover:text-blue-600"
+        >
+          Copy
+        </button>
+      </div>
+
+      <pre className="mt-2 overflow-x-auto rounded-lg bg-zinc-100 p-3 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+        {JSON.stringify(
+          finding.metadata,
+          null,
+          2
+        )}
+      </pre>
+    </section>
+)}
 
         {/* Recommendation */}
         {finding.recommendation && (

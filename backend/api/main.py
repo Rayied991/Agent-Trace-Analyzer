@@ -6,6 +6,9 @@ from fastapi import (
     HTTPException,
     UploadFile,
 )
+from trace_analyzer.report.pdf_exporter import (
+    PDFReportExporter,
+)
 from tempfile import NamedTemporaryFile
 from pathlib import Path
 from fastapi import Response
@@ -36,6 +39,57 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.post("/export/pdf")
+async def export_pdf(
+    file: UploadFile = File(...)
+):
+    contents = await file.read()
+
+    raw_trace = json.loads(
+        contents.decode("utf-8")
+    )
+
+    trace = JSONTraceAdapter().parse(
+        raw_trace
+    )
+
+    findings = []
+
+    for analyzer in ALL_ANALYZERS:
+        findings.extend(
+            analyzer.analyze(trace)
+        )
+
+    report = ReportGenerator().generate(
+        trace=trace,
+        findings=findings,
+    )
+
+    exporter = PDFReportExporter()
+
+    with NamedTemporaryFile(
+        suffix=".pdf",
+        delete=False,
+    ) as tmp:
+
+        exporter.export(
+            report,
+            tmp.name,
+        )
+
+        pdf = Path(
+            tmp.name
+        ).read_bytes()
+
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition":
+            'attachment; filename="report.pdf"'
+        },
+    )
 
 @app.post("/export/html")
 async def export_html(

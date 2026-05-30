@@ -16,4 +16,8 @@ This file defines:
 findings
 severity
 audit reports
-summaries
+
+
+uvicorn backend.api.main:app --reload
+
+start backend

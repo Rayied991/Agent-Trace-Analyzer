@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { analyzeTrace, exportHtml, exportPdf } from "@/lib/api";
+import { analyzeTrace, exportHtml, exportPdf, getHistory } from "@/lib/api";
 import {
   exportFindingsCsv,
 } from "@/lib/exportCsv";
@@ -9,6 +10,7 @@ import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 import AnalyzerBreakdown from "./AnalyzerBreakdown";
 import FindingsTable from "./FindingsTable";
+import HistoryTrends from "./HistoryTrends";
 import LatencyChart from "./LatencyChart";
 import SeverityBarChart from "./SeverityBarChart";
 import SeverityChart from "./SeverityChart";
@@ -73,6 +75,7 @@ export default function UploadTrace() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [analyzeStep, setAnalyzeStep] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [historyData, setHistoryData] = useState<any[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const runWithFile = useCallback(async (f: File) => {
@@ -103,10 +106,45 @@ export default function UploadTrace() {
       setProgress(100);
       await new Promise((r) => setTimeout(r, 350));
       setResult(report);
-      setStage("done");
-      toast.success(
-      "Analysis complete"
-    );
+
+const history =
+  await getHistory();
+
+const trendData =
+  history.map(
+    (
+      report: any,
+      index: number
+    ) => ({
+      trace: `#${index + 1}`,
+
+      reliability:
+        report.summary
+          .reliability_score,
+
+      tokens:
+        report.summary
+          .total_tokens,
+
+      waste:
+        report.summary
+          .waste_percentage,
+
+      latency:
+        report.summary
+          .average_latency_ms ?? 0,
+    })
+  );
+
+setHistoryData(
+  trendData
+);
+
+setStage("done");
+
+toast.success(
+  "Analysis complete"
+);
     } catch{
       clearInterval(interval);
      toast.error("Analysis failed");
@@ -392,6 +430,12 @@ toast.success(
   />
 </div>
 
+<div className="mt-6">
+  <HistoryTrends
+    data={historyData}
+  />
+</div>
+
           
 
           {/* <SeverityChart critical={criticalCount} warning={warningCount} info={infoCount} /> */}
@@ -467,6 +511,31 @@ dark:ring-amber-800
           className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 py-3 text-sm font-medium text-zinc-700 dark:text-zinc-200 transition dark:hover:bg-zinc-800"
         >
           Export PDF
+        </button>
+
+        <button
+          onClick={async () => {
+            if (!result) return;
+
+            const url =
+              `${window.location.origin}/report/${result.report_id}`;
+
+            await navigator.clipboard.writeText(
+              url
+            );
+
+            toast.success(
+              "Share URL copied"
+            );
+          }}
+          className="
+            rounded-xl
+            border
+            px-4
+            py-3
+          "
+        >
+          Share Report
         </button>
             <button
               onClick={reset}

@@ -26,6 +26,10 @@ from trace_analyzer.analyzers.registry import (
 from trace_analyzer.report.generator import (
     ReportGenerator,
 )
+from backend.api.history_store import (
+    save_report,
+    load_history,
+)
 app = FastAPI(
     title="Agent Trace Analyzer API"
 )
@@ -153,6 +157,34 @@ def root():
     )
 
 @app.get(
+    "/report/{report_id}"
+)
+def get_report(
+    report_id: str
+):
+    path = (
+        Path("reports")
+        / f"{report_id}.json"
+    )
+
+    if not path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="Report not found",
+        )
+
+    return json.loads(
+        path.read_text(
+            encoding="utf-8"
+        )
+    )
+    
+@app.get("/history")
+def history():
+
+    return load_history()
+
+@app.get(
     "/health",
     response_model=HealthResponse,
 )
@@ -221,5 +253,9 @@ async def analyze_trace(
         trace=trace,
         findings=findings,
     )
-
+    save_report(
+    report.model_dump(
+        mode="json"
+    )
+)
     return report.model_dump()

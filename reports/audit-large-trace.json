@@ -1,0 +1,59 @@
+{
+  "report_id": "audit-large-trace",
+  "trace_id": "large-trace",
+  "generated_at": "2026-05-30T18:49:45.520642Z",
+  "findings": [
+    {
+      "finding_id": "large-input-1",
+      "severity": "critical",
+      "category": "efficiency",
+      "title": "Large prompt detected",
+      "description": "Step '1' consumed 12000 input tokens.",
+      "affected_steps": [
+        "1"
+      ],
+      "token_impact": 12000,
+      "reliability_impact": null,
+      "cost_impact_usd": null,
+      "latency_impact_ms": null,
+      "recommendation": "Compress retrieval context or summarize conversation history.",
+      "evidence": "Input tokens: 12000",
+      "metadata": {
+        "threshold": 4000,
+        "actual_tokens": 12000
+      }
+    }
+  ],
+  "summary": {
+    "total_steps": 1,
+    "total_findings": 1,
+    "critical_count": 1,
+    "warning_count": 0,
+    "info_count": 0,
+    "quality_issues": 0,
+    "reliability_score": 100.0,
+    "total_tokens": 12500,
+    "wasted_tokens": 12000,
+    "waste_percentage": 96.0,
+    "total_cost_usd": 0.0,
+    "projected_savings_usd": 0.0,
+    "average_latency_ms": 900.0,
+    "top_issue": "Large prompt detected"
+  },
+  "analyzer_version": "0.1.0",
+  "generated_by": "Agent Trace Analyzer",
+  "metadata": {
+    "step_latencies": [
+      {
+        "step": "1",
+        "latency_ms": 900.0
+      }
+    ]
+  },
+  "analyzer_breakdown": [
+    {
+      "analyzer": "efficiency",
+      "findings": 1
+    }
+  ]
+}

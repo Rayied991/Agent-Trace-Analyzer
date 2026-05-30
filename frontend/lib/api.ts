@@ -26,6 +26,37 @@ export async function analyzeTrace(
 
   return response.json();
 }
+
+export async function getReport(
+  reportId: string
+) {
+  const response =
+    await fetch(
+      `http://localhost:8000/report/${reportId}`
+    );
+
+  if (!response.ok) {
+    throw new Error(
+      "Report not found"
+    );
+  }
+
+  return response.json();
+}
+export async function getHistory() {
+  const response =
+    await fetch(
+      `${API_URL}/history`
+    );
+
+  if (!response.ok) {
+    throw new Error(
+      "Failed to fetch history"
+    );
+  }
+
+  return response.json();
+}
 export async function exportPdf(
   file: File
 ) {

@@ -17,6 +17,9 @@ from trace_analyzer.analyzers.registry import (
 from trace_analyzer.report.generator import (
     ReportGenerator,
 )
+from trace_analyzer.report.html_exporter import (
+    HTMLReportExporter,
+)
 from trace_analyzer.schema.report import (
     Finding,
     Severity,
@@ -32,7 +35,18 @@ console = Console()
 @app.command()
 def analyze(
     trace_file: str,
-    output: str | None = None,
+
+    output: str | None = typer.Option(
+        None,
+        "--output",
+        help="Export report as JSON",
+    ),
+
+    html: str | None = typer.Option(
+        None,
+        "--html",
+        help="Export report as HTML",
+    ),
 ):
     """
     Analyze an agent trace file.
@@ -130,6 +144,24 @@ def analyze(
         )
 
     # -----------------------------------------
+    # Export HTML Report
+    # -----------------------------------------
+
+    if html:
+
+        exporter = HTMLReportExporter()
+
+        exporter.export(
+            report,
+            html,
+        )
+
+        console.print(
+            f"[green]HTML report exported to:[/green] "
+            f"{html}"
+        )
+
+    # -----------------------------------------
     # Render Header
     # -----------------------------------------
 
@@ -147,32 +179,32 @@ def analyze(
     # -----------------------------------------
 
     summary_table = Table(
-    title="Summary",
-    box=box.SIMPLE_HEAVY,
-    show_lines=True,
-    expand=False,
-)
+        title="Summary",
+        box=box.SIMPLE_HEAVY,
+        show_lines=True,
+        expand=False,
+    )
 
     summary_table.add_column(
-    "Metric",
-    style="bold cyan",
-)
+        "Metric",
+        style="bold cyan",
+    )
 
     summary_table.add_column(
-    "Value",
-    style="bold green",
-)
+        "Value",
+        style="bold green",
+    )
 
     summary_table.add_row(
         "Trace ID",
         report.trace_id,
     )
-    
+
     summary_table.add_row(
-    "Quality Issues",
-    str(report.summary.quality_issues),
+        "Quality Issues",
+        str(report.summary.quality_issues),
     )
-    
+
     score = report.summary.reliability_score
 
     if score >= 90:
@@ -189,10 +221,10 @@ def analyze(
         )
 
     summary_table.add_row(
-    "Reliability Score",
-    reliability_display,
+        "Reliability Score",
+        reliability_display,
     )
-    
+
     summary_table.add_row(
         "Total Steps",
         str(report.summary.total_steps),
@@ -202,10 +234,11 @@ def analyze(
         "Total Findings",
         str(report.summary.total_findings),
     )
+
     summary_table.add_row(
-    "Analyzers Run",
-    str(len(ALL_ANALYZERS)),
-)
+        "Analyzers Run",
+        str(len(ALL_ANALYZERS)),
+    )
 
     summary_table.add_row(
         "Total Tokens",
@@ -226,13 +259,15 @@ def analyze(
         "Projected Savings",
         f"${report.summary.projected_savings_usd:.6f}",
     )
+
     summary_table.add_row(
-    "Top Issue",
-    report.summary.top_issue or "-",
-)
+        "Top Issue",
+        report.summary.top_issue or "-",
+    )
+
     console.print(
-    "\n[bold white]Summary[/bold white]\n"
-)
+        "\n[bold white]Summary[/bold white]\n"
+    )
 
     console.print(summary_table)
 
@@ -249,10 +284,10 @@ def analyze(
         raise typer.Exit()
 
     findings_table = Table(
-    title="Findings",
-    box=box.SIMPLE_HEAVY,
-    show_lines=True,
-    expand=True,
+        title="Findings",
+        box=box.SIMPLE_HEAVY,
+        show_lines=True,
+        expand=True,
     )
 
     findings_table.add_column(
@@ -269,14 +304,14 @@ def analyze(
     )
 
     findings_table.add_column(
-    "Impact",
-    justify="right",
+        "Impact",
+        justify="right",
     )
 
     findings_table.add_column(
         "Recommendation",
     )
-    
+
     severity_order = {
         Severity.CRITICAL: 0,
         Severity.WARNING: 1,
@@ -284,60 +319,63 @@ def analyze(
     }
 
     report.findings.sort(
-    key=lambda f: severity_order.get(
-        f.severity,
-        99,
+        key=lambda f: severity_order.get(
+            f.severity,
+            99,
+        )
     )
-)
 
     for finding in report.findings:
 
         severity_color = {
-        Severity.CRITICAL: "red",
-        Severity.WARNING: "yellow",
-        Severity.INFO: "blue",
-    }.get(
-        finding.severity,
-        "white",
-    )
-
-    if finding.token_impact is not None:
-
-        impact = (
-            f"{finding.token_impact} tokens"
+            Severity.CRITICAL: "red",
+            Severity.WARNING: "yellow",
+            Severity.INFO: "blue",
+        }.get(
+            finding.severity,
+            "white",
         )
 
-    elif finding.reliability_impact is not None:
+        if finding.token_impact is not None:
 
-        impact = (
-            f"-{finding.reliability_impact} reliability"
+            impact = (
+                f"{finding.token_impact} tokens"
+            )
+
+        elif finding.reliability_impact is not None:
+
+            impact = (
+                f"-{finding.reliability_impact} reliability"
+            )
+
+        elif finding.latency_impact_ms is not None:
+
+            impact = (
+                f"{finding.latency_impact_ms:.0f} ms"
+            )
+
+        else:
+
+            impact = "-"
+
+        findings_table.add_row(
+            f"[{severity_color}]"
+            f"{finding.severity.value.upper()}"
+            f"[/{severity_color}]",
+            finding.category.value,
+            finding.title,
+            impact,
+            finding.recommendation or "-",
         )
-
-    elif finding.latency_impact_ms is not None:
-
-        impact = (
-            f"{finding.latency_impact_ms:.0f} ms"
-        )
-
-    else:
-
-        impact = "-"
-
-    findings_table.add_row(
-        f"[{severity_color}]"
-        f"{finding.severity.value.upper()}"
-        f"[/{severity_color}]",
-        finding.category.value,
-        finding.title,
-        impact,
-        finding.recommendation or "-",
-    )
 
     console.print()
+
     console.print(
-    "\n[bold white]Findings[/bold white]\n"
-)
+        "\n[bold white]Findings[/bold white]\n"
+    )
+
     console.print(findings_table)
+
     console.print()
 
 

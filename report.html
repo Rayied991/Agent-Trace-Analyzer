@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<title>Agent Trace Audit Report</title>
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+}
+
+h1 {
+    color: #2c3e50;
+}
+
+h2 {
+    margin-top: 30px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+th {
+    background-color: #f5f5f5;
+}
+
+.warning {
+    color: orange;
+    font-weight: bold;
+}
+
+.critical {
+    color: red;
+    font-weight: bold;
+}
+
+.info {
+    color: blue;
+    font-weight: bold;
+}
+
+.summary-box {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Agent Trace Audit Report</h1>
+
+<div class="summary-box">
+
+<p>
+<b>Trace ID:</b>
+trace_001
+</p>
+
+<p>
+<b>Total Findings:</b>
+1
+</p>
+
+<p>
+<b>Total Tokens:</b>
+305
+</p>
+
+<p>
+<b>Wasted Tokens:</b>
+125
+</p>
+
+<p>
+<b>Reliability Score:</b>
+100.0/100
+</p>
+
+<p>
+<b>Top Issue:</b>
+Duplicate tool call detected
+</p>
+
+</div>
+
+<h2>Findings</h2>
+
+<table>
+
+<tr>
+<th>Severity</th>
+<th>Category</th>
+<th>Title</th>
+<th>Impact</th>
+<th>Recommendation</th>
+</tr>
+
+
+<tr>
+<td class="warning">
+WARNING
+</td>
+
+<td>
+redundancy
+</td>
+
+<td>
+Duplicate tool call detected
+</td>
+
+<td>
+125 tokens
+</td>
+
+<td>
+Consider caching tool results or reusing previous outputs.
+</td>
+
+</tr>
+
+</table>
+
+</body>
+</html>

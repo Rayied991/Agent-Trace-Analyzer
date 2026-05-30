@@ -3,6 +3,7 @@
 import { analyzeTrace } from "@/lib/api";
 import { AuditReport } from "@/types/report";
 import { useCallback, useRef, useState } from "react";
+import ComparisonCharts from "./ComparisonCharts";
 
 type UploadState = "idle" | "dragging" | "loading" | "done" | "error";
 
@@ -367,6 +368,39 @@ export default function TraceComparison() {
             <ComparisonSummary left={left} right={right} />
           </div>
         )}
+     {bothReady && (
+  <div className="mt-8">
+    <ComparisonCharts
+      reliabilityA={
+        left.summary.reliability_score
+      }
+      reliabilityB={
+        right.summary.reliability_score
+      }
+
+      tokensA={
+        left.summary.total_tokens
+      }
+      tokensB={
+        right.summary.total_tokens
+      }
+
+      wasteA={
+        left.summary.waste_percentage
+      }
+      wasteB={
+        right.summary.waste_percentage
+      }
+
+      latencyA={
+        left.summary.average_latency_ms ?? 0
+      }
+      latencyB={
+        right.summary.average_latency_ms ?? 0
+      }
+    />
+  </div>
+)}
       </div>
     </>
   );

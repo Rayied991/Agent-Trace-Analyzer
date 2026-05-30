@@ -5,6 +5,7 @@ from trace_analyzer.schema.report import (
     Finding,
     ReportSummary,
     Severity,
+    AnalyzerBreakdown
 )
 from trace_analyzer.schema.trace import (
     NormalizedTrace,
@@ -146,6 +147,37 @@ class ReportGenerator:
             top_issue=top_issue,
         )
 
+# -----------------------------------------
+# Analyzer Breakdown
+# -----------------------------------------
+
+        analyzer_counts = {}
+
+        for finding in findings:
+
+            analyzer_name = (
+                finding.category
+                if finding.category
+                else "Unknown"
+            )
+
+            analyzer_counts[
+                analyzer_name
+            ] = (
+                analyzer_counts.get(
+                    analyzer_name,
+                    0,
+                )
+                + 1
+            )
+
+        breakdown = [
+            AnalyzerBreakdown(
+                analyzer=name,
+                findings=count,
+            )
+            for name, count in analyzer_counts.items()
+        ]
         # -----------------------------------------
         # Build Audit Report
         # -----------------------------------------
@@ -175,6 +207,8 @@ class ReportGenerator:
             )
         ]
     },
+    
+    analyzer_breakdown=breakdown,
 )
 
         return report

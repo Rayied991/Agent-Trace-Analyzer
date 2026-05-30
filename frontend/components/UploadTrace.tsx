@@ -1,13 +1,19 @@
 "use client";
 
 import { analyzeTrace, exportHtml, exportPdf } from "@/lib/api";
+import {
+  exportFindingsCsv,
+} from "@/lib/exportCsv";
 import type { AuditReport } from "@/types/report";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
+import AnalyzerBreakdown from "./AnalyzerBreakdown";
 import FindingsTable from "./FindingsTable";
 import LatencyChart from "./LatencyChart";
+import SeverityBarChart from "./SeverityBarChart";
 import SeverityChart from "./SeverityChart";
 import SeveritySummary from "./SeveritySummary";
+import SkeletonCard from "./SkeletonCard";
 import SummaryCards from "./SummaryCards";
 import TokenWasteChart from "./TokenWasteChart";
 type Stage = "idle" | "dragging" | "analyzing" | "done" | "error";
@@ -290,6 +296,13 @@ toast.success(
             />
           </div>
 
+         {/* ✅ Add skeleton grid here, between the bar and the steps list */}
+    <div className="mb-7 grid gap-3 lg:grid-cols-5">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <SkeletonCard key={i} />
+      ))}
+    </div>
+
           <ul className="space-y-3">
             {ANALYSIS_STEPS.map((label, i) => {
               const state: StepState =
@@ -357,6 +370,28 @@ toast.success(
   />
 </div>
 
+<div className="mt-6">
+  <AnalyzerBreakdown
+    items={
+      result.analyzer_breakdown ?? []
+    }
+  />
+</div>
+
+<div className="mt-6">
+  <SeverityBarChart
+    critical={
+      result.summary.critical_count
+    }
+    warning={
+      result.summary.warning_count
+    }
+    info={
+      result.summary.info_count
+    }
+  />
+</div>
+
           
 
           {/* <SeverityChart critical={criticalCount} warning={warningCount} info={infoCount} /> */}
@@ -415,6 +450,17 @@ dark:ring-amber-800
               </svg>
               Export HTML
             </button>
+
+            <button
+            onClick={() =>
+              exportFindingsCsv(
+                result.findings
+              )
+            }
+            className="rounded-lg border px-4 py-2"
+          >
+            Export CSV
+          </button>
 
             <button
           onClick={downloadPdf}

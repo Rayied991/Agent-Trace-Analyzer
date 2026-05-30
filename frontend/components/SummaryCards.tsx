@@ -40,7 +40,7 @@ text-zinc-400 dark:text-zinc-500">
 
 export default function SummaryCards({ summary }: { summary: ReportSummary }) {
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-6">
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-8">
       <MetricCard
         label="Reliability"
         value={`${summary.reliability_score}/100`}
@@ -63,6 +63,20 @@ export default function SummaryCards({ summary }: { summary: ReportSummary }) {
         value={`${summary.waste_percentage}%`}
         sub={`${fmt(summary.wasted_tokens)} tokens`}
         valueClass={summary.waste_percentage > 20 ? "text-red-500" : "text-zinc-900"}
+      />
+      <MetricCard
+        label="Cost"
+        value={`$${(
+          summary.total_cost_usd ?? 0
+        ).toFixed(4)}`}
+      />
+
+      <MetricCard
+        label="Savings"
+        value={`$${(
+          summary.projected_savings_usd ?? 0
+        ).toFixed(4)}`}
+        valueClass="text-emerald-600"
       />
       <MetricCard
       label="Analyzers"

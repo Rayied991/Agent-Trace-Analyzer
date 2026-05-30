@@ -51,8 +51,15 @@ export interface ReportSummary {
   average_latency_ms?: number | null;
 
   top_issue?: string | null;
-}
 
+  total_cost_usd?: number;
+
+projected_savings_usd?: number;
+}
+export interface AnalyzerBreakdown {
+  analyzer: string;
+  findings: number;
+}
 export interface AuditReport {
   report_id: string;
   trace_id: string;
@@ -69,4 +76,7 @@ export interface AuditReport {
       latency_ms: number;
     }[];
   };
+
+  analyzer_breakdown?: AnalyzerBreakdown[];
 }
+

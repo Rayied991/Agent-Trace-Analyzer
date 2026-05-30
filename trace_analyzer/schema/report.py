@@ -1,14 +1,20 @@
 from datetime import datetime, timezone
 from enum import Enum
 from typing import List, Optional
-
+from pydantic import BaseModel
 from pydantic import BaseModel, Field
 
 
 # =========================================================
 # Severity Levels
 # =========================================================
-
+class AnalyzerBreakdown(
+    BaseModel
+):
+    analyzer: str
+    findings: int
+    
+    
 class Severity(str, Enum):
     """
     Represents the severity level
@@ -160,6 +166,7 @@ class ReportSummary(BaseModel):
     for the audit report.
     """
 
+
     total_steps: int = Field(
         default=0,
         ge=0,
@@ -273,7 +280,8 @@ class AuditReport(BaseModel):
     trace_id: str = Field(
         ...,
         description="Associated trace ID"
-    )
+    )   
+
 
     generated_at: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc),
@@ -313,6 +321,10 @@ class AuditReport(BaseModel):
         default_factory=dict,
         description="Additional report metadata"
     )
+    
+    analyzer_breakdown: list[
+        AnalyzerBreakdown
+    ] = []
 
     
 

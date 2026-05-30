@@ -7,6 +7,25 @@ interface FindingDrawerProps {
   onClose: () => void;
 }
 
+function MetricCard({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-lg bg-zinc-100 p-3 dark:bg-zinc-800">
+      <p className="text-xs text-zinc-500">
+        {label}
+      </p>
+
+      <p className="mt-1 font-semibold">
+        {value}
+      </p>
+    </div>
+  );
+}
 async function copyText(
   value: string
 ) {
@@ -151,6 +170,54 @@ export default function FindingDrawer({
     </section>
 )}
 
+{(
+  finding.token_impact != null ||
+  finding.reliability_impact != null ||
+  finding.latency_impact_ms != null ||
+  finding.cost_impact_usd != null
+) && (
+  <section className="mb-6">
+    <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
+      Impact Metrics
+    </p>
+
+    <div className="mt-3 grid grid-cols-2 gap-3">
+      {finding.token_impact != null && (
+        <MetricCard
+          label="Token Impact"
+          value={String(
+            finding.token_impact
+          )}
+        />
+      )}
+
+      {finding.reliability_impact != null && (
+        <MetricCard
+          label="Reliability"
+          value={`-${finding.reliability_impact}`}
+        />
+      )}
+
+      {finding.latency_impact_ms != null && (
+        <MetricCard
+          label="Latency"
+          value={`${Math.round(
+            finding.latency_impact_ms
+          )} ms`}
+        />
+      )}
+
+      {finding.cost_impact_usd != null && (
+        <MetricCard
+          label="Cost"
+          value={`$${finding.cost_impact_usd}`}
+        />
+      )}
+    </div>
+  </section>
+)}
+
+  
         {/* Recommendation */}
         {finding.recommendation && (
           <section>

@@ -39,6 +39,7 @@ class FindingCategory(str, Enum):
     WORKFLOW = "workflow"
     LATENCY = "latency"
     TOOLING = "tooling"
+    EFFICIENCY = "efficiency"
 
 
 # =========================================================

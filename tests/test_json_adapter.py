@@ -18,5 +18,5 @@ def test_json_adapter_parses_trace():
 
     assert trace.trace_id == "trace_001"
     assert trace.agent_name == "weather-agent"
-    assert len(trace.steps) == 2
-    assert trace.total_tokens == 180
+    assert len(trace.steps) == 3
+    assert trace.total_tokens == 305

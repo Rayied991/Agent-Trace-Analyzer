@@ -1,0 +1,47 @@
+{
+  "report_id": "audit-trace_001",
+  "trace_id": "trace_001",
+  "generated_at": "2026-05-30T08:27:23.931862Z",
+  "findings": [
+    {
+      "finding_id": "redundancy-b1cb4f77",
+      "severity": "warning",
+      "category": "redundancy",
+      "title": "Duplicate tool call detected",
+      "description": "Tool 'search' was called 2 times with identical arguments.",
+      "affected_steps": [
+        "1",
+        "2"
+      ],
+      "token_impact": 125,
+      "cost_impact_usd": null,
+      "latency_impact_ms": 220.0,
+      "recommendation": "Consider caching tool results or reusing previous outputs.",
+      "evidence": "Duplicate tool call: search",
+      "metadata": {
+        "tool_name": "search",
+        "tool_args": {
+          "query": "weather paris"
+        },
+        "occurrences": 2
+      }
+    }
+  ],
+  "summary": {
+    "total_steps": 3,
+    "total_findings": 1,
+    "critical_count": 0,
+    "warning_count": 1,
+    "info_count": 0,
+    "total_tokens": 305,
+    "wasted_tokens": 125,
+    "waste_percentage": 40.98,
+    "total_cost_usd": 0.0,
+    "projected_savings_usd": 0.0,
+    "average_latency_ms": 183.33,
+    "top_issue": "Duplicate tool call detected"
+  },
+  "analyzer_version": "0.1.0",
+  "generated_by": "Agent Trace Analyzer",
+  "metadata": {}
+}

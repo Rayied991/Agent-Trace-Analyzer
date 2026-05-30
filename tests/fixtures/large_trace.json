@@ -1,0 +1,14 @@
+{
+  "trace_id": "large-trace",
+  "agent_name": "research-agent",
+  "steps": [
+    {
+      "step_id": "1",
+      "step_type": "llm_call",
+      "content": "Huge retrieval context",
+      "input_tokens": 12000,
+      "output_tokens": 500,
+      "latency_ms": 900
+    }
+  ]
+}

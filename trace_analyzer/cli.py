@@ -6,16 +6,21 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
+from rich import box
+
 from trace_analyzer.adapters.json_adapter import (
     JSONTraceAdapter,
 )
-from trace_analyzer.analyzers.redundancy import (
-    RedundancyAnalyzer,
+from trace_analyzer.analyzers.registry import (
+    ALL_ANALYZERS,
 )
 from trace_analyzer.report.generator import (
     ReportGenerator,
 )
-from trace_analyzer.schema.report import Severity
+from trace_analyzer.schema.report import (
+    Finding,
+    Severity,
+)
 
 app = typer.Typer(
     help="Agent Trace Analyzer CLI"
@@ -27,12 +32,17 @@ console = Console()
 @app.command()
 def analyze(
     trace_file: str,
+    output: str | None = None,
 ):
     """
     Analyze an agent trace file.
     """
 
     trace_path = Path(trace_file)
+
+    # -----------------------------------------
+    # Validate File
+    # -----------------------------------------
 
     if not trace_path.exists():
 
@@ -76,11 +86,9 @@ def analyze(
     # Run Analyzers
     # -----------------------------------------
 
-    analyzers = [
-        RedundancyAnalyzer(),
-    ]
+    analyzers = ALL_ANALYZERS
 
-    findings: list = []
+    findings: list[Finding] = []
 
     for analyzer in analyzers:
 
@@ -100,6 +108,28 @@ def analyze(
     )
 
     # -----------------------------------------
+    # Export JSON Report
+    # -----------------------------------------
+
+    if output:
+
+        with open(
+            output,
+            "w",
+            encoding="utf-8",
+        ) as f:
+
+            f.write(
+                report.model_dump_json(
+                    indent=2
+                )
+            )
+
+        console.print(
+            f"[green]Report exported to:[/green] {output}"
+        )
+
+    # -----------------------------------------
     # Render Header
     # -----------------------------------------
 
@@ -117,18 +147,21 @@ def analyze(
     # -----------------------------------------
 
     summary_table = Table(
-        title="Summary"
-    )
+    title="Summary",
+    box=box.SIMPLE_HEAVY,
+    show_lines=True,
+    expand=False,
+)
 
     summary_table.add_column(
-        "Metric",
-        style="cyan",
-    )
+    "Metric",
+    style="bold cyan",
+)
 
     summary_table.add_column(
-        "Value",
-        style="green",
-    )
+    "Value",
+    style="bold green",
+)
 
     summary_table.add_row(
         "Trace ID",
@@ -144,6 +177,10 @@ def analyze(
         "Total Findings",
         str(report.summary.total_findings),
     )
+    summary_table.add_row(
+    "Analyzers Run",
+    str(len(ALL_ANALYZERS)),
+)
 
     summary_table.add_row(
         "Total Tokens",
@@ -162,8 +199,15 @@ def analyze(
 
     summary_table.add_row(
         "Projected Savings",
-        f"${report.summary.projected_savings_usd}",
+        f"${report.summary.projected_savings_usd:.6f}",
     )
+    summary_table.add_row(
+    "Top Issue",
+    report.summary.top_issue or "-",
+)
+    console.print(
+    "\n[bold white]Summary[/bold white]\n"
+)
 
     console.print(summary_table)
 
@@ -180,7 +224,10 @@ def analyze(
         raise typer.Exit()
 
     findings_table = Table(
-        title="Findings"
+    title="Findings",
+    box=box.SIMPLE_HEAVY,
+    show_lines=True,
+    expand=True,
     )
 
     findings_table.add_column(
@@ -204,6 +251,19 @@ def analyze(
     findings_table.add_column(
         "Recommendation",
     )
+    
+    severity_order = {
+        Severity.CRITICAL: 0,
+        Severity.WARNING: 1,
+        Severity.INFO: 2,
+    }
+
+    report.findings.sort(
+    key=lambda f: severity_order.get(
+        f.severity,
+        99,
+    )
+)
 
     for finding in report.findings:
 
@@ -227,6 +287,9 @@ def analyze(
         )
 
     console.print()
+    console.print(
+    "\n[bold white]Findings[/bold white]\n"
+)
     console.print(findings_table)
     console.print()
 

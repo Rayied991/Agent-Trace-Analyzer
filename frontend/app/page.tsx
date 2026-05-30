@@ -1,5 +1,6 @@
 import ThemeToggle from "@/components/ThemeToggle";
 import UploadTrace from '@/components/UploadTrace';
+import Link from "next/link";
 const page = () => {
   return (
     <main className="min-h-screen bg-zinc-50 p-8 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
@@ -10,6 +11,13 @@ const page = () => {
         <h1 className="text-4xl font-bold">
           Agent Trace Analyzer
         </h1>
+
+        <Link
+  href="/compare"
+  className="mb-6 inline-block text-sm text-blue-500"
+>
+  Compare Traces →
+</Link>
 
         <UploadTrace />
       </div>

@@ -314,6 +314,8 @@ class AuditReport(BaseModel):
         description="Additional report metadata"
     )
 
+    
+
     model_config = {
         "extra": "allow",
         "validate_assignment": True,

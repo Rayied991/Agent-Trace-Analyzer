@@ -62,4 +62,11 @@ export interface AuditReport {
 
   analyzer_version: string;
   generated_by: string;
+
+  metadata?: {
+    step_latencies?: {
+      step: string;
+      latency_ms: number;
+    }[];
+  };
 }

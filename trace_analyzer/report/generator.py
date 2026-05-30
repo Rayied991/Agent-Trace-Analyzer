@@ -151,12 +151,30 @@ class ReportGenerator:
         # -----------------------------------------
 
         report = AuditReport(
-            report_id=f"audit-{trace.trace_id}",
-            trace_id=trace.trace_id,
-            findings=findings,
-            summary=summary,
-            analyzer_version="0.1.0",
-            generated_by="Agent Trace Analyzer",
-        )
+    report_id=f"audit-{trace.trace_id}",
+    trace_id=trace.trace_id,
+    findings=findings,
+    summary=summary,
+    analyzer_version="0.1.0",
+    generated_by="Agent Trace Analyzer",
+
+    metadata={
+        "step_latencies": [
+            {
+                "step": (
+                    step.step_id
+                    if hasattr(step, "step_id")
+                    else str(index + 1)
+                ),
+                "latency_ms": (
+                    step.latency_ms or 0
+                ),
+            }
+            for index, step in enumerate(
+                trace.steps
+            )
+        ]
+    },
+)
 
         return report

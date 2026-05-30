@@ -5,9 +5,11 @@ import type { AuditReport } from "@/types/report";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 import FindingsTable from "./FindingsTable";
+import LatencyChart from "./LatencyChart";
 import SeverityChart from "./SeverityChart";
 import SeveritySummary from "./SeveritySummary";
 import SummaryCards from "./SummaryCards";
+import TokenWasteChart from "./TokenWasteChart";
 type Stage = "idle" | "dragging" | "analyzing" | "done" | "error";
 
 const ANALYSIS_STEPS = [
@@ -323,27 +325,58 @@ toast.success(
 
           {summary && <SummaryCards summary={summary} />}
 
+<div className="mt-6 grid gap-6 lg:grid-cols-2">
+  <TokenWasteChart
+    totalTokens={
+      result.summary.total_tokens
+    }
+    wastedTokens={
+      result.summary.wasted_tokens
+    }
+  />
+
+  <SeverityChart
+    critical={
+      result.summary.critical_count
+    }
+    warning={
+      result.summary.warning_count
+    }
+    info={
+      result.summary.info_count
+    }
+  />
+</div>
+
+<div className="mt-6">
+  <LatencyChart
+    data={
+      result.metadata
+        ?.step_latencies ?? []
+    }
+  />
+</div>
+
+          
+
           {/* <SeverityChart critical={criticalCount} warning={warningCount} info={infoCount} /> */}
-          <div className="grid gap-4 lg:grid-cols-3">
+         <div className="grid gap-4 lg:grid-cols-3">
 
               <div className="lg:col-span-2">
-                <SeverityChart
+                <SeveritySummary
                   critical={criticalCount}
                   warning={warningCount}
                   info={infoCount}
                 />
               </div>
 
-              <SeveritySummary
-                critical={criticalCount}
-                warning={warningCount}
-                info={infoCount}
-              />
+              <div>
+                <FindingsTable
+                  findings={findings}
+                />
+              </div>
 
             </div>
-
-          <FindingsTable findings={findings} />
-
           {summary?.top_issue && (
             <div className="
 rounded-xl

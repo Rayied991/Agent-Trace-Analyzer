@@ -1,0 +1,15 @@
+{
+  "trace_id": "slow-trace",
+  "agent_name": "research-agent",
+  "steps": [
+    {
+      "step_id": "1",
+      "step_type": "tool_call",
+      "content": "Searching docs",
+      "tool_name": "search",
+      "input_tokens": 100,
+      "output_tokens": 20,
+      "latency_ms": 8000
+    }
+  ]
+}

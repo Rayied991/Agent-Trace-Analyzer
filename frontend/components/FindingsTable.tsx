@@ -29,9 +29,33 @@ export default function FindingsTable({ findings }: { findings: Finding[] }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [selectedFinding, setSelectedFinding] =
   useState<Finding | null>(null);
+  const [search, setSearch] = useState("");
 
-  const visible = findings.filter((f) => filter === "all" || f.severity === filter);
+  const visible = findings.filter((f) => {
+  const severityMatch =
+    filter === "all" ||
+    f.severity === filter;
 
+  const query = search.toLowerCase();
+
+  const searchMatch =
+    f.title
+      .toLowerCase()
+      .includes(query) ||
+    f.description
+      .toLowerCase()
+      .includes(query) ||
+    (
+      f.recommendation ?? ""
+    )
+      .toLowerCase()
+      .includes(query);
+
+  return (
+    severityMatch &&
+    searchMatch
+  );
+});
   return (
     <>
    <div className="
@@ -45,10 +69,37 @@ export default function FindingsTable({ findings }: { findings: Finding[] }) {
               dark:bg-zinc-900
               dark:ring-zinc-800
               ">
+
+                <div className="border-b border-zinc-100 dark:border-zinc-800 p-4">
+  <input
+    type="text"
+    placeholder="Search findings..."
+    value={search}
+    onChange={(e) =>
+      setSearch(e.target.value)
+    }
+    className="
+      w-full
+      rounded-lg
+      border
+      border-zinc-200
+      px-3
+      py-2
+      text-sm
+      outline-none
+      focus:ring-2
+      focus:ring-zinc-300
+
+      dark:border-zinc-700
+      dark:bg-zinc-800
+      dark:text-zinc-100
+    "
+  />
+</div>
       {/* Tab bar */}
       <div className="flex items-center gap-1 border-b border-zinc-100 dark:border-zinc-800 px-4 py-2.5">
         <span className="mr-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
-          Findings
+          Findings ({visible.length})
         </span>
         {TABS.map((tab) => (
           <button

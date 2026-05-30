@@ -1,10 +1,22 @@
 "use client";
 
 import { Finding } from "@/types/report";
-
+import { toast } from "sonner";
 interface FindingDrawerProps {
   finding: Finding | null;
   onClose: () => void;
+}
+
+async function copyText(
+  value: string
+) {
+  await navigator.clipboard.writeText(
+    value
+  );
+
+  toast.success(
+    "Copied to clipboard"
+  );
 }
 
 export default function FindingDrawer({
@@ -68,6 +80,17 @@ export default function FindingDrawer({
             <pre className="mt-2 overflow-x-auto rounded-lg bg-zinc-100 p-3 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
               {finding.evidence}
             </pre>
+
+            <button
+                onClick={() =>
+                    copyText(
+                    finding.evidence ?? ""
+                    )
+                }
+                className="mb-2 text-xs text-blue-500"
+                >
+                Copy
+                </button>
           </section>
         )}
 
@@ -121,6 +144,17 @@ export default function FindingDrawer({
             <div className="mt-2 rounded-lg bg-emerald-50 p-4 text-sm text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300">
               {finding.recommendation}
             </div>
+
+            <button
+                onClick={() =>
+                    copyText(
+                    finding.recommendation ?? ""
+                    )
+                }
+                className="mb-2 text-xs text-blue-500"
+                >
+                Copy
+                </button>
           </section>
         )}
       </div>
